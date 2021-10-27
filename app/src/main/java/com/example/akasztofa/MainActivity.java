@@ -19,20 +19,19 @@ public class MainActivity extends AppCompatActivity {
     private Button btnMinusz, btnPlusz, btnTipp;
     private TextView textViewBetu, textViewSzo;
     private ImageView imageViewAkasztofa;
-    private String[] szavak = new String[] {
-            "AUTÓ", "HÁZ", "ANANÁSZ", "PROGRAMOZÁS", "TANÁR",
-            "PÉNZ", "LÁTOGATÓ", "ŰRLÉNY", "FASZÁLLÍTÓ", "XD"
-    };
-    private String kitalalandoSzo, rejtettSzo;
+    private String[] szavak;
     private char[] abc;
+    private String kitalalandoSzo, rejtettSzo;
     private List<Character> tippeltBetuk;
-    private int betuIndex;
+    private int betuIndex, hibakSzama;
+    private char tippeltBetu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+        ujJatek();
 
         btnPlusz.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,10 +46,103 @@ public class MainActivity extends AppCompatActivity {
                 betuValtas(false);
             }
         });
+
+        btnTipp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                tipp();
+            }
+        });
+    }
+
+    private void kepValtas(){
+        switch (hibakSzama){
+            case 0:
+                imageViewAkasztofa.setImageResource(R.drawable.akasztofa00);
+                break;
+
+            case 1:
+                imageViewAkasztofa.setImageResource(R.drawable.akasztofa01);
+                break;
+
+            case 2:
+                imageViewAkasztofa.setImageResource(R.drawable.akasztofa02);
+                break;
+
+            case 3:
+                imageViewAkasztofa.setImageResource(R.drawable.akasztofa03);
+                break;
+
+            case 4:
+                imageViewAkasztofa.setImageResource(R.drawable.akasztofa04);
+                break;
+
+            case 5:
+                imageViewAkasztofa.setImageResource(R.drawable.akasztofa05);
+                break;
+
+            case 6:
+                imageViewAkasztofa.setImageResource(R.drawable.akasztofa06);
+                break;
+
+            case 7:
+                imageViewAkasztofa.setImageResource(R.drawable.akasztofa07);
+                break;
+
+            case 8:
+                imageViewAkasztofa.setImageResource(R.drawable.akasztofa08);
+                break;
+
+            case 9:
+                imageViewAkasztofa.setImageResource(R.drawable.akasztofa09);
+                break;
+
+            case 10:
+                imageViewAkasztofa.setImageResource(R.drawable.akasztofa10);
+                break;
+
+            case 11:
+                imageViewAkasztofa.setImageResource(R.drawable.akasztofa11);
+                break;
+
+            case 12:
+                imageViewAkasztofa.setImageResource(R.drawable.akasztofa12);
+                break;
+
+            case 13:
+                imageViewAkasztofa.setImageResource(R.drawable.akasztofa13);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private void tipp(){
+        if (!tippeltBetuk.contains(tippeltBetu)){
+            tippeltBetuk.add(tippeltBetu);
+            textViewBetu.setTextColor(Color.parseColor("#000000"));
+            boolean joTipp = false;
+            StringBuilder stringBuilder = new StringBuilder(rejtettSzo);
+            for (int i = 0; i < kitalalandoSzo.length(); i++){
+                if (kitalalandoSzo.charAt(i) == tippeltBetu){
+                    joTipp = true;
+                    stringBuilder.setCharAt(i * 2, tippeltBetu);
+                }
+            }
+            if (joTipp){
+                rejtettSzo = stringBuilder.toString();
+                textViewSzo.setText(rejtettSzo);
+            }
+            else{
+                hibakSzama++;
+                kepValtas();
+            }
+        }
     }
 
     private void betuSzinezes(){
-        if (tippeltBetuk.contains(abc[betuIndex])){
+        if (tippeltBetuk.contains(tippeltBetu)){
             textViewBetu.setTextColor(Color.parseColor("#000000"));
         }
         else{
@@ -75,8 +167,9 @@ public class MainActivity extends AppCompatActivity {
                 betuIndex--;
             }
         }
+        tippeltBetu = abc[betuIndex];
         betuSzinezes();
-        textViewBetu.setText(abc[betuIndex] + "");
+        textViewBetu.setText(tippeltBetu + "");
     }
 
     private void kirajzol(){
@@ -91,6 +184,16 @@ public class MainActivity extends AppCompatActivity {
         textViewSzo.setText(rejtettSzo);
     }
 
+    private void ujJatek(){
+        kitalalandoSzo = szavak[(int) (Math.random() * szavak.length)];
+        rejtettSzo = "";
+        kirajzol();
+        tippeltBetuk = new ArrayList<>();
+        betuIndex = 0;
+        hibakSzama = 0;
+        tippeltBetu = abc[0];
+    }
+
     private void init(){
         btnMinusz = findViewById(R.id.btnMinusz);
         btnPlusz = findViewById(R.id.btnPlusz);
@@ -98,11 +201,10 @@ public class MainActivity extends AppCompatActivity {
         imageViewAkasztofa = findViewById(R.id.imageViewAkasztofa);
         textViewSzo = findViewById(R.id.textViewSzo);
         textViewBetu = findViewById(R.id.textViewBetu);
-        kitalalandoSzo = szavak[(int) (Math.random() * szavak.length)];
-        rejtettSzo = "";
-        kirajzol();
+        szavak = new String[] {
+                "AUTÓ", "HÁZ", "ANANÁSZ", "PROGRAMOZÁS", "TANÁR",
+                "PÉNZ", "LÁTOGATÓ", "ŰRLÉNY", "FASZÁLLÍTÓ", "XD"
+        };
         abc = "aábcdeéfghiíjklmnoóöőpqrstuúüűvwxyz".toUpperCase().toCharArray();
-        tippeltBetuk = new ArrayList<>();
-        betuIndex = 0;
     }
 }
