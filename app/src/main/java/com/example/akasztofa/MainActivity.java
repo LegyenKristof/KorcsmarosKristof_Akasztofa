@@ -1,7 +1,9 @@
 package com.example.akasztofa;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -111,11 +113,37 @@ public class MainActivity extends AppCompatActivity {
 
             case 13:
                 imageViewAkasztofa.setImageResource(R.drawable.akasztofa13);
+                jatekVege(false);
                 break;
 
             default:
                 break;
         }
+    }
+
+    private void jatekVege(boolean gyozelem){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        if (gyozelem){
+            builder.setTitle("Helyes megfejtés!");
+        }
+        else{
+            builder.setTitle("Nem sikerült kitalálni!");
+        }
+        builder.setMessage("Szeretnél még egyet játszani?");
+        builder.setNegativeButton("NEM", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+        builder.setPositiveButton("IGEN", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ujJatek();
+            }
+        });
+        builder.create().show();
     }
 
     private void tipp(){
@@ -133,6 +161,9 @@ public class MainActivity extends AppCompatActivity {
             if (joTipp){
                 rejtettSzo = stringBuilder.toString();
                 textViewSzo.setText(rejtettSzo);
+                if (!rejtettSzo.contains("_")){
+                    jatekVege(true);
+                }
             }
             else{
                 hibakSzama++;
@@ -172,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
         textViewBetu.setText(tippeltBetu + "");
     }
 
-    private void kirajzol(){
+    private void rejtettSzoGeneralas(){
         for (int i = 0; i < kitalalandoSzo.length(); i++){
             if (i < kitalalandoSzo.length() - 1){
                 rejtettSzo += "_ ";
@@ -187,11 +218,14 @@ public class MainActivity extends AppCompatActivity {
     private void ujJatek(){
         kitalalandoSzo = szavak[(int) (Math.random() * szavak.length)];
         rejtettSzo = "";
-        kirajzol();
+        rejtettSzoGeneralas();
         tippeltBetuk = new ArrayList<>();
         betuIndex = 0;
         hibakSzama = 0;
         tippeltBetu = abc[0];
+        betuSzinezes();
+        kepValtas();
+        textViewBetu.setText(tippeltBetu + "");
     }
 
     private void init(){
@@ -202,8 +236,9 @@ public class MainActivity extends AppCompatActivity {
         textViewSzo = findViewById(R.id.textViewSzo);
         textViewBetu = findViewById(R.id.textViewBetu);
         szavak = new String[] {
-                "AUTÓ", "HÁZ", "ANANÁSZ", "PROGRAMOZÁS", "TANÁR",
-                "PÉNZ", "LÁTOGATÓ", "ŰRLÉNY", "FASZÁLLÍTÓ", "XD"
+                /*"AUTÓ", "HÁZ", "ANANÁSZ", "PROGRAMOZÁS", "TANÁR",
+                "PÉNZ", "LÁTOGATÓ", "ŰRLÉNY", "FASZÁLLÍTÓ", "XD",*/
+                "KRISTÓF", "KRISA", "DORCI", "DOMI", "SZOFI"
         };
         abc = "aábcdeéfghiíjklmnoóöőpqrstuúüűvwxyz".toUpperCase().toCharArray();
     }
